@@ -4,6 +4,18 @@ Quick reference for migrating the Blueshift Escrow program from Pinocchio v0.9 t
 
 ---
 
+## ⚠️ Important Dependency
+
+To use `Address::find_program_address()` and `Address::create_program_address()`, you **must** add this to your `Cargo.toml`:
+
+```toml
+solana-address = { version = "2.0.0", features = ["curve25519"] }
+```
+
+Without this dependency, these methods won't be available via `Address::`.
+
+---
+
 ## 🎯 Why These Changes?
 
 Pinocchio v0.10 aligns with Solana SDK types for better interoperability:
@@ -111,18 +123,21 @@ let seeds = [
 
 ## ✅ Migration Checklist
 
+- [ ] Add `solana-address = { version = "2.0.0", features = ["curve25519"] }` to `Cargo.toml`
 - [ ] Remove `pinocchio-pubkey` from `Cargo.toml`
 - [ ] Replace all `AccountInfo` → `AccountView`
 - [ ] Replace all `Pubkey` → `Address`
-- [ ] Update imports: `instruction::` → `cpi::`
-- [ ] Update imports: `program_error::` → `error::`
-- [ ] Remove `use pinocchio_pubkey::*`
-- [ ] Change `.key()` → `.address()`
-- [ ] Change `.try_borrow_data()` → `.try_borrow()`
-- [ ] Change `.try_borrow_mut_data()` → `.try_borrow_mut()`
-- [ ] Change `find_program_address()` → `Address::find_program_address()`
-- [ ] Change `create_program_address()` → `Address::create_program_address()`
-- [ ] Change `from_account_info()` → `from_account_view()`
+- [ ] Update imports:
+  - [ ] `instruction::` → `cpi::`
+  - [ ] `program_error::` → `error::`
+  - [ ] Remove `use pinocchio_pubkey::*`
+- [ ] Update method calls:
+  - [ ] `.key()` → `.address()`
+  - [ ] `.try_borrow_data()` → `.try_borrow()`
+  - [ ] `.try_borrow_mut_data()` → `.try_borrow_mut()`
+  - [ ] `find_program_address()` → `Address::find_program_address()`
+  - [ ] `create_program_address()` → `Address::create_program_address()`
+  - [ ] `from_account_info()` → `from_account_view()`
 - [ ] Update PDA seeds: `.key()` → `.address().as_array()` or `.address().as_ref()`
 
 ---
